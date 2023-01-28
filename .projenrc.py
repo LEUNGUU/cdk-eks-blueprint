@@ -7,6 +7,7 @@ project = AwsCdkPythonApp(
     module_name="cdk_eks_blueprint",
     name="cdk-eks-blueprint",
     version="0.1.0",
+    devDeps=["pytest"]
 )
 
 project.synth()
