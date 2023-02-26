@@ -1,0 +1,8 @@
+{
+  "exclude": [ ".env", "cdk.out", "tests" ],
+  "venvPath": "./",
+  "venv": ".env",
+  "reportTypeshedErrors": false,
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false,
+}

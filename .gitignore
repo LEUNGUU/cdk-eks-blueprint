@@ -87,3 +87,5 @@ cython_debug/
 !/cdk.json
 /cdk.out/
 .cdk.staging/
+!pyrightconfig.json
+!.env.sh

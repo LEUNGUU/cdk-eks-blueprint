@@ -4,12 +4,10 @@ from cdk_eks_blueprint.main import MyStack
 
 # for development, use account/region from cdk cli
 dev_env = Environment(
-  account=os.getenv('CDK_DEFAULT_ACCOUNT'),
-  region=os.getenv('CDK_DEFAULT_REGION')
+    account=os.getenv("CDK_DEFAULT_ACCOUNT"), region=os.getenv("CDK_DEFAULT_REGION")
 )
 
 app = App()
-MyStack(app, "cdk-eks-blueprint-dev", env=dev_env)
-# MyStack(app, "cdk-eks-blueprint-prod", env=prod_env)
+MyStack(app, "testeks", "testeks", env=dev_env)
 
 app.synth()
