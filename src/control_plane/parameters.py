@@ -1,5 +1,6 @@
 from typing import List, Union, Dict
 from dataclasses import dataclass
+from constructs import Construct
 from aws_cdk import (
     aws_eks as eks,
     aws_ec2 as ec2,
@@ -49,10 +50,12 @@ class DefaultCapacity(Validations):
                 getattr(ec2.InstanceClass, instance_class),
                 getattr(ec2.InstanceSize, instance_size),
             )
-        if is_obj: # type: ignore
+        if is_obj:  # type: ignore
             return value
 
-    def validate_capacity_type(self, value, **_) -> Union[eks.DefaultCapacityType, None]:
+    def validate_capacity_type(
+        self, value, **_
+    ) -> Union[eks.DefaultCapacityType, None]:
         if not (is_str := isinstance(value, str)) and not (
             is_obj := isinstance(value, eks.CapacityType)
         ):
@@ -62,18 +65,18 @@ class DefaultCapacity(Validations):
             if capacity_type not in eks.DefaultCapacityType.__members__:
                 raise ValueError("capacity_type should be either nodegroup or ec2")
             return getattr(eks.DefaultCapacityType, capacity_type)
-        if is_obj: # type: ignore
-            return value # type: ignore
+        if is_obj:  # type: ignore
+            return value  # type: ignore
 
 
 @dataclass
-class ControlPlaneParams(Validations):
+class ControlPlaneParams(Validations, Construct):
     # General config
     cluster_name: str
-    k8s_version: str
+    k8s_version: Union[str, eks.KubernetesVersion]
     secrets_encryption_key: str
     endpoint_access: eks.EndpointAccess
-    master_role: Union[str, iam.IRole] # use from to change to IRole
+    master_role: Union[str, iam.Role]  # use from to change to IRole
     role: str
     cluster_logging: List[eks.ClusterLoggingTypes]
     core_dns_compute_type: eks.CoreDnsComputeType
@@ -105,9 +108,22 @@ class ControlPlaneParams(Validations):
 
     tags: Dict[str, str]
 
-    def validate_master_role(self, value, **_):
-        if not (is_str := isinstance(value, str)) and not (is_obj := isinstance(value, iam.IRole)):
-            raise ValueError("master_role should be string or iam.IRole")
+    def validate_master_role(self, value, **_) -> None:
+        if not (is_str := isinstance(value, str)) and not (
+            is_obj := isinstance(value, iam.Role)
+        ):
+            raise ValueError("master_role must be string or iam.Role")
+
+    def validate_k8s_version(self, value, **_) -> Union[None, eks.KubernetesVersion]:
+        if not (is_str := isinstance(value, str)) and not (
+            is_obj := isinstance(value, eks.KubernetesVersion)
+        ):
+            raise ValueError("k8s_version must be string or eks.KubernetesVersion")
+        if is_str:  # 1.21
+            value = f'V{value.replace(".", "_")}'
+            return getattr(eks.KubernetesVersion, value)
+        if is_obj: # type: ignore
+            return value
 
 
 if __name__ == "__main__":
