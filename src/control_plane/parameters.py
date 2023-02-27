@@ -1,10 +1,11 @@
 from typing import List, Union, Dict
+from ipaddress import ip_network
 from dataclasses import dataclass
-from constructs import Construct
 from aws_cdk import (
     aws_eks as eks,
     aws_ec2 as ec2,
     aws_iam as iam,
+    aws_kms as kms,
 )
 
 
@@ -70,12 +71,12 @@ class DefaultCapacity(Validations):
 
 
 @dataclass
-class ControlPlaneParams(Validations, Construct):
+class ControlPlaneParams(Validations):
     # General config
     cluster_name: str
     k8s_version: Union[str, eks.KubernetesVersion]
-    secrets_encryption_key: str
-    endpoint_access: eks.EndpointAccess
+    secrets_encryption_key: Union[str, kms.Key]
+    endpoint_access: Union[str, eks.EndpointAccess]
     master_role: Union[str, iam.Role]  # use from to change to IRole
     role: str
     cluster_logging: List[eks.ClusterLoggingTypes]
@@ -108,12 +109,6 @@ class ControlPlaneParams(Validations, Construct):
 
     tags: Dict[str, str]
 
-    def validate_master_role(self, value, **_) -> None:
-        if not (is_str := isinstance(value, str)) and not (
-            is_obj := isinstance(value, iam.Role)
-        ):
-            raise ValueError("master_role must be string or iam.Role")
-
     def validate_k8s_version(self, value, **_) -> Union[None, eks.KubernetesVersion]:
         if not (is_str := isinstance(value, str)) and not (
             is_obj := isinstance(value, eks.KubernetesVersion)
@@ -122,8 +117,32 @@ class ControlPlaneParams(Validations, Construct):
         if is_str:  # 1.21
             value = f'V{value.replace(".", "_")}'
             return getattr(eks.KubernetesVersion, value)
+        if is_obj:  # type: ignore
+            return value
+
+    def validate_secrets_encryption_key(self, value, **_) -> None:
+        if not isinstance(value, str) and not isinstance(value, kms.Key):
+            raise ValueError("secrets_encryption_key must be string or kms.Key")
+
+    def validate_endpoint_access(self, value, **_) -> Union[None, eks.EndpointAccess, str]:
+        if not (is_str := isinstance(value, str)) and not (is_obj := isinstance(value, eks.EndpointAccess)):
+            raise ValueError("endpoint_access must be string or eks.EndpointAccess")
+        if is_str:
+            if value.upper() in ["PRIVATE", "PUBLIC", "PUBLIC_AND_PRIVATE"]:
+                return getattr(eks.EndpointAccess, value.upper())
+            else:
+                try:
+                    ip_network(value)
+                    return value # value should be valid ip cidr
+                except Exception as e:
+                    raise e
         if is_obj: # type: ignore
             return value
+
+    def validate_master_role(self, value, **_) -> None:
+        if not isinstance(value, str) and not isinstance(value, iam.Role):
+            raise ValueError("master_role must be string or iam.Role")
+
 
 
 if __name__ == "__main__":
