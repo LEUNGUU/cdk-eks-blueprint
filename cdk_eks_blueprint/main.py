@@ -1,6 +1,6 @@
 from aws_cdk import Stack
 from constructs import Construct
-from control_plane.cluster import EKSCluster
+from src.cluster import EKSCluster
 
 
 class MyStack(Stack):

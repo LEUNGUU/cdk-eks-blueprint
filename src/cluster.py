@@ -1,8 +1,13 @@
+# pyright: reportUndefinedVariable=false, reportGeneralTypeIssues=false
+from typing import List, Dict
 from aws_cdk import aws_eks as eks
 from aws_cdk import aws_ec2 as ec2
 from aws_cdk import aws_autoscaling as autoscaling
 from aws_cdk import Duration
 from constructs import Construct
+from vpc import VPC
+from param_wrapper import ControlPlaneParams, DefaultCapacity
+
 
 
 class EKSCluster(Construct):
@@ -12,48 +17,54 @@ class EKSCluster(Construct):
         id: str,
         *,
         cluster_name: str = "EKSCluster",
+        k8s_version: str = "1.21",
+        endpoint_access: str = "PUBLIC_AND_PRIVATE",
+        cluster_logging: List[str] = ["API", "CONTROLLER_MANAGER", "AUDIT"],
+        core_dns_compute_type: str = "EC2",
+        default_node_number: int = 0,
+        default_node_type: str = "t3.medium",
+        default_capacity_type: str = "nodegroup",
         vpc_id: str = "",
+        output_cluster_name: bool = True,
+        output_config_command: bool = True,
+        tags: Dict[str, str] = {},
         **kwargs,
     ):
         super().__init__(scope, id, **kwargs)
-        if vpc_id:
-            vpc = ec2.Vpc.from_lookup(self, "CustomVPC", vpc_id=vpc_id)
-        else:
-            vpc = ec2.Vpc(
-                self,
-                "VPC",
-                max_azs=2,
-                ip_addresses=ec2.IpAddresses.cidr("172.31.0.0/16"),
-                subnet_configuration=[
-                    ec2.SubnetConfiguration(
-                        subnet_type=ec2.SubnetType.PUBLIC, name="Public", cidr_mask=20
-                    ),
-                    ec2.SubnetConfiguration(
-                        subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS,
-                        name="Private",
-                        cidr_mask=22,
-                    ),
-                ],
-                nat_gateways=1,
-            )
+        default_tags = {"owner": "Managed by CDK"}
+        default_tags.update(tags)
+        dc = DefaultCapacity(
+            node_number=default_node_number,
+            node_type=default_node_type,
+            capacity_type=default_capacity_type
+        )
+        cpp = ControlPlaneParams(
+            k8s_version=k8s_version,
+            endpoint_access=endpoint_access,
+            cluster_logging=cluster_logging,
+            core_dns_compute_type=core_dns_compute_type,
+            default_capacity=dc,
+            tags=default_tags
+        )
+        vpc = VPC(
+            self,
+            "EKSVPC",
+            vpc_id=vpc_id if vpc_id else ""
+        )
         self.cluster = eks.Cluster(
             self,
             "EKSCluster",
-            version=eks.KubernetesVersion.V1_21,
+            version=cpp.k8s_version,
             alb_controller=eks.AlbControllerOptions(
                 version=eks.AlbControllerVersion.V2_4_1
             ),
-            cluster_logging=[
-                eks.ClusterLoggingTypes.API,
-                eks.ClusterLoggingTypes.AUTHENTICATOR,
-                eks.ClusterLoggingTypes.CONTROLLER_MANAGER,
-                eks.ClusterLoggingTypes.AUDIT,
-            ],
-            core_dns_compute_type=eks.CoreDnsComputeType.EC2,  # or Fargate
-            endpoint_access=eks.EndpointAccess.PUBLIC_AND_PRIVATE,
+            cluster_logging=cpp.cluster_logging,
+            core_dns_compute_type=cpp.core_dns_compute_type,
+            endpoint_access=cpp.endpoint_access,
             cluster_name=cluster_name,
-            output_cluster_name=True,
-            vpc=vpc,
+            output_cluster_name=output_cluster_name,
+            output_config_command=output_config_command,
+            vpc=vpc.vpc,
         )
         self.cluster.add_auto_scaling_group_capacity(
             "EKSAutoScalingGroup",
@@ -61,7 +72,7 @@ class EKSCluster(Construct):
                 ec2.InstanceClass.T3, ec2.InstanceSize.MEDIUM
             ),
             key_name="macYu",
-            max_capacity=5,
+            kax_capacity=5,
             min_capacity=1,
             signals=autoscaling.Signals.wait_for_all(timeout=Duration.minutes(10)),
         )
