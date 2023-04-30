@@ -7,6 +7,20 @@
     },
     {
       "name": "pytest",
+      "type": "devenv"
+    },
+    {
+      "name": "twine",
+      "version": "3.3.0",
+      "type": "devenv"
+    },
+    {
+      "name": "wheel",
+      "version": "0.36.2",
+      "type": "devenv"
+    },
+    {
+      "name": "pytest",
       "version": "6.2.1",
       "type": "test"
     }

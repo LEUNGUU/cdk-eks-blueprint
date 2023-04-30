@@ -98,7 +98,12 @@
     },
     "package": {
       "name": "package",
-      "description": "Creates the distribution package"
+      "description": "Creates the distribution package",
+      "steps": [
+        {
+          "exec": "python setup.py sdist bdist_wheel"
+        }
+      ]
     },
     "post-compile": {
       "name": "post-compile",
@@ -107,6 +112,24 @@
     "pre-compile": {
       "name": "pre-compile",
       "description": "Prepare the project for compilation"
+    },
+    "publish": {
+      "name": "publish",
+      "description": "Uploads the package against a test PyPI endpoint.",
+      "steps": [
+        {
+          "exec": "twine upload dist/*"
+        }
+      ]
+    },
+    "publish:test": {
+      "name": "publish:test",
+      "description": "Uploads the package against a test PyPI endpoint.",
+      "steps": [
+        {
+          "exec": "twine upload --repository-url https://test.pypi.org/legacy/ dist/*"
+        }
+      ]
     },
     "test": {
       "name": "test",

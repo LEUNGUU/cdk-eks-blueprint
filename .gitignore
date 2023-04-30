@@ -5,6 +5,7 @@ node_modules/
 !/.projen/deps.json
 !/.projen/files.json
 !/.github/workflows/pull-request-lint.yml
+!/.github/workflows/auto-approve.yml
 /.env
 !/requirements.txt
 !/requirements-dev.txt
@@ -83,3 +84,4 @@ dmypy.json
 .pyre/
 .pytype/
 cython_debug/
+!/setup.py
