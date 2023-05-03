@@ -1,0 +1,28 @@
+name: Publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-n-publish:
+    name: Build and publish Python 🐍 distributions 📦 to PyPI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.14.0
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: pip install projen && npx projen default
+      - name: Create python artifact
+        run: npx projen package
+      - name: Publish distribution 📦 to PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+        run: npx projen publish
