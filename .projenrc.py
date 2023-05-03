@@ -1,5 +1,4 @@
 from projen.python import PythonProject, Setuptools
-from projen.release import Publisher, Release
 
 project = PythonProject(
     author_email="liangy3928@gmail.com",
@@ -32,13 +31,5 @@ package = Setuptools(
         ]
     },
 )
-
-publisher = Publisher(
-    project=project,
-    build_job_id="releasePypi",
-    artifact_name="dist",
-)
-
-publisher.publish_to_py_pi()
 
 project.synth()
