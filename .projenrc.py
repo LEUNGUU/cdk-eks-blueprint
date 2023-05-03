@@ -5,7 +5,7 @@ project = PythonProject(
     author_name="leunguu",
     module_name="cdk_eks_blueprint",
     name="cdk-eks-blueprint",
-    version="0.0.7",
+    version="0.0.8",
     vscode=False,
     auto_approve_options={"allowed_usernames": ["leunguu"]},
     deps=[
@@ -21,7 +21,7 @@ package = Setuptools(
     project=project,
     author_email="liangy3928@gmail.com",
     author_name="leunguu",
-    version="0.0.7",
+    version="0.0.8",
     setup_config={
         "install_requires": [
             "semver",
