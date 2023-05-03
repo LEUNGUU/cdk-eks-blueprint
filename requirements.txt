@@ -2,4 +2,4 @@
 aws-cdk-lib>=2.1.0, <3.0.0
 aws-cdk.lambda-layer-kubectl-v24
 constructs>=10.0.5, <11.0.0
-semver==3.0.0.dev4
+semver

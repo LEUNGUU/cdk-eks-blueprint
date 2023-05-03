@@ -1,4 +1,3 @@
-# pyright: reportUndefinedVariable=false, reportGeneralTypeIssues=false
 from typing import List
 from aws_cdk import aws_eks as eks
 from constructs import Construct
@@ -15,7 +14,7 @@ class EKSCluster(Construct):
         *,
         controller_plane: ControllerPlane,
         eks_managed_node_groups: List[EKSManagedNodeGroup] = [],
-        self_managed_node_group: List[SelfManagedNodeGroup] = [],
+        self_managed_node_groups: List[SelfManagedNodeGroup] = [],
         **kwargs,
     ):
         super().__init__(scope, id, **kwargs)
@@ -84,8 +83,7 @@ class EKSCluster(Construct):
                 update_policy=node_group.update_policy,
                 vpc_subnets=node_group.vpc_subnets,
             )
-        # Create a launch Template first
-        for node_group in self_managed_node_group:
+        for node_group in self_managed_node_groups:
             cluster.add_nodegroup_capacity(
                 f"SELFEKSASG{node_group.nodegroup_name}",
                 nodegroup_name=node_group.nodegroup_name,

@@ -10,7 +10,7 @@ project = PythonProject(
     vscode=False,
     auto_approve_options={"allowed_usernames": ["leunguu"]},
     deps=[
-        "semver@3.0.0-dev.4",
+        "semver",
         "aws-cdk.lambda-layer-kubectl-v24",
         "aws-cdk-lib>=2.1.0, <3.0.0",
         "constructs>=10.0.5, <11.0.0",

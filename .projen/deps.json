@@ -2,7 +2,7 @@
   "dependencies": [
     {
       "name": "projen",
-      "version": "0.71.32",
+      "version": "0.71.35",
       "type": "devenv"
     },
     {
@@ -33,7 +33,6 @@
     },
     {
       "name": "semver",
-      "version": "3.0.0-dev.4",
       "type": "runtime"
     },
     {

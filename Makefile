@@ -22,6 +22,9 @@ package:
 publish:
 	npx projen publish
 
+test:
+	npx projen test
+
 fmt:
 	$(PYTHON) -m black .
 
