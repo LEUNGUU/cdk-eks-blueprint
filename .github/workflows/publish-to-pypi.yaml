@@ -21,6 +21,12 @@ jobs:
         run: pip install projen && npx projen default
       - name: Create python artifact
         run: npx projen package
+      # try to upload to pypi test first in case something fails
+      - name: Publish distribution 📦 to PyPI test first
+        env:
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+        run: npx projen publish:test
       - name: Publish distribution 📦 to PyPI
         env:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
