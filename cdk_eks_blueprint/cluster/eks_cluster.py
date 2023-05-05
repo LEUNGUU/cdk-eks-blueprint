@@ -3,7 +3,7 @@ from aws_cdk import aws_eks as eks
 from constructs import Construct
 from .controller_plane import ControllerPlane
 from .managed_node_group import EKSManagedNodeGroup
-from .self_manage_node_group import SelfManagedNodeGroup
+from .self_managed_node_group import SelfManagedNodeGroup
 from .fargate_profile import FargateProfile
 
 

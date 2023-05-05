@@ -14,8 +14,10 @@ project = PythonProject(
         "aws-cdk-lib>=2.1.0, <3.0.0",
         "constructs>=10.0.5, <11.0.0",
     ],
-    dev_deps=["pytest"],
+    dev_deps=["pytest", "black"],
 )
+
+project.gitignore.exclude("cdk.out/")
 
 package = Setuptools(
     project=project,

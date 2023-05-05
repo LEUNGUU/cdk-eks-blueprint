@@ -19,6 +19,8 @@ def test_synthesizes_properly():
     template.has_resource_properties(
         "AWS::AutoScaling::AutoScalingGroup", {"AutoScalingGroupName": "apple"}
     )
+    template.has_resource_properties("AWS::EKS::Nodegroup", {"NodegroupName": "banana"})
     template.has_resource_properties(
-        "AWS::EKS::Nodegroup", {"NodegroupName": "banana"}
+        "Custom::AWSCDK-EKS-FargateProfile",
+        {"Config": {"selectors": [{"namespace": "app"}]}},
     )

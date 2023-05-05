@@ -1,4 +1,4 @@
-from typing import List, Union, Dict, Any
+from typing import List, Union, Dict, Any, Optional
 from ._params_validation import Validation
 from dataclasses import dataclass, field
 from aws_cdk import aws_eks as eks, aws_iam as iam, aws_ec2 as ec2
@@ -7,7 +7,7 @@ from aws_cdk import aws_eks as eks, aws_iam as iam, aws_ec2 as ec2
 @dataclass
 class FargateProfile(Validation):
     fargate_profile_name: str
-    selectors: List[Union[Selector, Dict[str, Any]]] = field(
+    selectors: List[Union[eks.Selector, Dict[str, Any]]] = field(
         default_factory=lambda: [
             eks.Selector(namespace="kube-system"),
             eks.Selector(namespace="default"),
