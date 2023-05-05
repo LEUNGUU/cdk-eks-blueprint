@@ -4,9 +4,13 @@ on:
     branches:
       - main
 
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+
 jobs:
   build-n-publish:
-    name: Build and publish Python 🐍 distributions 📦 to PyPI
+    name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-node@v3
@@ -22,7 +26,7 @@ jobs:
       - name: Create python artifact
         run: npx projen package
       # try to upload to pypi test first in case something fails
-      - name: Publish distribution 📦 to PyPI test first
+      - name: Publish distribution 📦 to TestPyPI first
         env:
           TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}

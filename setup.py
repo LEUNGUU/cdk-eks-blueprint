@@ -10,7 +10,7 @@ kwargs = json.loads(
     "python_requires": ">=3.7",
     "author": "leunguu",
     "author_email": "liangy3928@gmail.com",
-    "version": "0.0.7",
+    "version": "0.0.9",
     "install_requires": [
         "semver",
         "aws-cdk.lambda-layer-kubectl-v24",

@@ -1,10 +1,10 @@
 help:
 	@echo "install - Use projen to manage dependencies"
-	@echo "lint - check source code with flake8"
 	@echo "fmt - format source code with black"
 	@echo "test - run unit tests"
-	@echo "deploy - deploy all your stacks"
-	@echo "destroy - destroy all your stacks"
+	@echo "synth - synthesize all project files"
+	@echo "package - build PyPi package"
+	@echo "publish - Publish packages to Pypi"
 	@echo "clean - remove build, test, and Python artifacts locally"
 
 VENV = .env
@@ -24,6 +24,9 @@ publish:
 
 test:
 	npx projen test
+
+synth:
+	npx cdk synth --quiet -a "python app.py"
 
 fmt:
 	$(PYTHON) -m black .
@@ -47,4 +50,6 @@ clean:
 	@find . -name '*.pyo' -exec rm -f {} +
 	@find . -name '*~' -exec rm -f {} +
 	@find . -name '__pycache__' -exec rm -fr {} +
+	@rm -fr build/
+	@rm -fr dist/
 

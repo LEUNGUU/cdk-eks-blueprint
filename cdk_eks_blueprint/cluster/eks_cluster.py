@@ -3,7 +3,8 @@ from aws_cdk import aws_eks as eks
 from constructs import Construct
 from .controller_plane import ControllerPlane
 from .managed_node_group import EKSManagedNodeGroup
-from .self_manage_node_group import SelfManagedNodeGroup
+from .self_managed_node_group import SelfManagedNodeGroup
+from .fargate_profile import FargateProfile
 
 
 class EKSCluster(Construct):
@@ -15,6 +16,7 @@ class EKSCluster(Construct):
         controller_plane: ControllerPlane,
         eks_managed_node_groups: List[EKSManagedNodeGroup] = [],
         self_managed_node_groups: List[SelfManagedNodeGroup] = [],
+        fargate_profiles: List[FargateProfile] = [],
         **kwargs,
     ):
         super().__init__(scope, id, **kwargs)
@@ -42,6 +44,7 @@ class EKSCluster(Construct):
             default_capacity_instance=controller_plane.default_capacity_instance,
             default_capacity_type=controller_plane.default_capacity_type,
             cluster_logging=controller_plane.cluster_logging,
+            # dns compute type should be FARGATE when using fargate profile as data plane
             core_dns_compute_type=controller_plane.core_dns_compute_type,
             endpoint_access=controller_plane.endpoint_access,
             alb_controller=controller_plane.alb_controller,
@@ -102,4 +105,13 @@ class EKSCluster(Construct):
                 subnets=node_group.subnets,
                 tags=node_group.tags,
                 taints=node_group.taints,
+            )
+
+        for profile in fargate_profiles:
+            cluster.add_fargate_profile(
+                f"FARGATE{profile.fargate_profile_name}",
+                selectors=profile.selectors,
+                pod_execution_role=profile.pod_execution_role,
+                subnet_selection=profile.subnet_selection,
+                vpc=profile.vpc,
             )

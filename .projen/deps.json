@@ -1,6 +1,10 @@
 {
   "dependencies": [
     {
+      "name": "black",
+      "type": "devenv"
+    },
+    {
       "name": "projen",
       "version": "0.71.35",
       "type": "devenv"
