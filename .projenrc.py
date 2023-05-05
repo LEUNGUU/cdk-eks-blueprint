@@ -1,4 +1,13 @@
 from projen.python import PythonProject, Setuptools
+from projen.github import SemanticTitleOptions
+from projen.github import GitHubOptions, PullRequestLintOptions
+from projen.github import GithubWorkflow
+
+semantic_options = SemanticTitleOptions(
+    types=["feat", "fix", "chore", "docs", "test", "refactor", "build", "ci"]
+)
+
+pull_request_lint = PullRequestLintOptions(semantic_title_options=semantic_options)
 
 project = PythonProject(
     author_email="liangy3928@gmail.com",
@@ -15,6 +24,7 @@ project = PythonProject(
         "constructs>=10.0.5, <11.0.0",
     ],
     dev_deps=["pytest", "black"],
+    github_options=GitHubOptions(pull_request_lint_options=pull_request_lint),
 )
 
 project.gitignore.exclude("cdk.out/")
