@@ -1,9 +1,9 @@
-# Amazon EKS Blueprints for CDK Python
+<h1 align="center">Amazon EKS Blueprints for CDK Python</h1>
 
 <p align="center">
-<a href="https://github.com/LEUNGUU/cdk-eks-blueprint/actions"><img alt="Actions Status" src="https://github.com/LEUNGUU/cdk-eks-blueprint/workflows/Test/badge.svg"></a>
-<a href="https://github.com/LEUNGUU/cdk-eks-blueprint/blob/main/LICENSE"><img alt="License: MIT" src=""></a>
-<a href="https://pypi.org/project/cdk-eks-blueprint/"><img alt="PyPI" src="https://img.shields.io/pypi/v/black"></a>
+<img alt="GitHub Workflow Status (with branch)" src="https://img.shields.io/github/actions/workflow/status/leunguu/cdk-eks-blueprint/test.yml?branch=main">
+<img alt="GitHub" src="https://img.shields.io/github/license/leunguu/cdk-eks-blueprint">
+<img alt="PyPI" src="https://img.shields.io/pypi/v/cdk-eks-blueprint">
 </p>
 
 Welcome to Amazon EKS Blueprints for CDK Python!
