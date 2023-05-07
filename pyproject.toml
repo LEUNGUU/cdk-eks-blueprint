@@ -1,0 +1,8 @@
+[tool.pytest.ini_options]
+addopts = "-v"
+markers = [
+    "eks_managed_nodegroup: Test eks cluster with managed node group as data plane",
+    "self_managed_nodegroup: Test eks cluster with self managed node group as data plane",
+    "fargate_profile: Test eks cluster with fargate profile as data plane",
+    "all_providers: Test eks cluster with all three providers",
+]
