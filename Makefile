@@ -1,9 +1,9 @@
 help:
-	@echo "install - Use projen to manage dependencies"
+	@echo "install - create venv and install dependencies"
 	@echo "fmt - format source code with black"
 	@echo "test - run unit tests"
 	@echo "synth - synthesize all project files"
-	@echo "package - build PyPi package"
+	@echo "build - build PyPi package"
 	@echo "publish - Publish packages to Pypi"
 	@echo "clean - remove build, test, and Python artifacts locally"
 
@@ -11,19 +11,23 @@ VENV = .env
 PYTHON = $(VENV)/bin/python3
 PIP = $(VENV)/bin/pip
 
-install: default
+install: venv dependency
 
-default:
-	npx projen default
+venv:
+	@python3 -m venv ".env"
 
-package:
-	npx projen package
+dependency:
+	$(PIP) install -r ./requirements.txt
+	$(PIP) install -r ./requirements-dev.txt
+
+build:
+	$(PYTHON) -m build
 
 publish:
-	npx projen publish
+	$(PYTHON) -m twine upload dist/*
 
 test:
-	npx projen test
+	pytest
 
 synth:
 	npx cdk synth --quiet -a "python app.py"

@@ -1,3 +1,35 @@
+[project]
+name = "cdk-eks-blueprint"
+description = "Amazon EKS Blueprint for CDK Python"
+authors = [{ name = "leunguu", email = "liangy3928@gmail.com" }]
+requires-python = ">=3.10"
+license = { text = "MIT" }
+readme = "README.md"
+keywords = ["CDK", "EKS", "Python", "IaC", "Blueprint"]
+dependencies = [
+    "semver",
+    "aws-cdk-lib>=2.1.0, <3.0.0",
+    "constructs>=10.0.5, <11.0.0",
+    "aws-cdk.lambda-layer-kubectl-v24",
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+dynamic = ["version"]
+
+
+[project.urls]
+homepage = "https://github.com/LEUNGUU/cdk-eks-blueprint"
+repository = "https://github.com/LEUNGUU/cdk-eks-blueprint.git"
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
 [tool.pytest.ini_options]
 addopts = "-v"
 markers = [
@@ -6,3 +38,10 @@ markers = [
     "fargate_profile: Test eks cluster with fargate profile as data plane",
     "all_providers: Test eks cluster with all three providers",
 ]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = { attr = "cdk_eks_blueprint.__version__" }
